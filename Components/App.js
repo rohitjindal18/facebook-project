@@ -22,12 +22,15 @@ class Friends extends React.Component {
 		});
 	}
 
-	componentWillReceiveProps() {
-		this.setState({
-			friendL : this.props.friends
-		});
+	componentDidMount() {
+		
 	}
-	render() {
+
+	shouldComponentUpdate(){
+		return (this.state.friendL.length != this.props.friends.length);
+	}
+
+	componentDidUpdate() {
 		this.state.friendL.map((elem , index) => {
 			API.fetchFriendsPhoto(elem.id).
 				then((resp) => {
@@ -36,13 +39,27 @@ class Friends extends React.Component {
 						});
 				});
 		})
+	}
+
+	componentWillReceiveProps() {
+		this.setState({
+			friendL : this.props.friends
+		});
+	}
+
+	handleClick(index) {
+		this.props.handleFriendClick(this.state.friendL[index].id);
+	}
+	render() {
+		var component = this;
 		var friendList = this.state.friendL.map((elem , index) => {
 			return(
-				<ListItem key={index}
-					leftAvatar={
-			        <Avatar src={this.state.imagePath[index]} />
-			      }
-				>{elem.name}</ListItem>
+				<ListItem onClick={this.handleClick.bind(component , index)} key={index}
+				leftAvatar={
+				        <Avatar src="../Images/user.png" />
+				      }>
+					{elem.name}
+				</ListItem>
 				);
 		});
 	
@@ -60,23 +77,23 @@ class App extends React.Component {
 	constructor(props){
 		super(props);
 		this.state= {
+			userId : "me",
 			friendLis : []
 		}
 	}
 	componentWillMount() {
-		this.props.dispatch(handle_initial_load());
+		this.props.dispatch(handle_initial_load(this.state.userId));
 	}
 	componentDidMount(){
 		this.setState({
 			friendLis : this.props.appData.friends
 		});
-		this.props.dispatch(handle_friend_list());
+		this.props.dispatch(handle_friend_list(this.state.userId));
 	}
 
-	componentWillReceiveProps() {
-		this.setState({
-			friendLis : this.props.appData.friends
-		});
+	handleClicked(index) {
+		this.props.dispatch(handle_initial_load(index));
+		this.props.dispatch(handle_friend_list(index));
 	}
 
 	render() {
@@ -85,7 +102,7 @@ class App extends React.Component {
 				<Paper style={styles.mainPhoto} zDepth={3} circle={true}>
 						<img style={styles.imageProfile} src={this.props.appData.profilePhotoPath} />
 				</Paper>
-				<Friends {...this.props} friends={this.props.appData.friends}/>
+				<Friends handleFriendClick={this.handleClicked.bind(this)} {...this.props} friends={this.props.appData.friends}/>
 			</div>
 		);
 	}

@@ -1,9 +1,9 @@
 import API from '../API/api.js';
 export const LOAD_PROFILE_PHOTO = 'LOAD_PROFILE_PHOTO';
 
-export function handle_initial_load(){
+export function handle_initial_load(userId){
 	return (dispatch) => {
-		API.fetchMyProfilePhoto().
+		API.fetchMyProfilePhoto(userId).
 		then((response) => {
 				return dispatch({
 					type : 'LOAD_PROFILE_PHOTO',
@@ -13,14 +13,17 @@ export function handle_initial_load(){
 	}
 }
 
-export function handle_friend_list() {
+export function handle_friend_list(userId) {
 	return (dispatch) => {
-		API.fetchFriends().
+		API.fetchFriends(userId).
 		then((response) => {
-				return dispatch({
-					type : 'LOAD_FRIENDS',
-					response
-				})
+				if(response.length > 0){
+						return dispatch({
+							type : 'LOAD_FRIENDS',
+							response
+					})
+				}
+				
 		});
 	}
 }

@@ -1,6 +1,6 @@
 var API = {
-  	fetchMyProfilePhoto() {
-      var request = new Request('http://localhost:7777/fetchSelfProfilePhoto', {
+  	fetchMyProfilePhoto(userId) {
+      var request = new Request('http://localhost:7777/fetchSelfProfilePhoto?id='+userId, {
         method: 'GET', 
         mode: 'cors', 
         redirect: 'follow'
@@ -12,8 +12,8 @@ var API = {
       });
    },
 
-   fetchFriends() {
-      var request = new Request('http://localhost:7777/fetchFriends', {
+   fetchFriends(userId) {
+      var request = new Request('http://localhost:7777/fetchFriends?id='+userId, {
         method: 'GET', 
         mode: 'cors', 
         redirect: 'follow'
