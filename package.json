@@ -1,0 +1,33 @@
+{
+  "name": "reactapp",
+  "version": "1.0.0",
+  "description": "\"React\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --hot"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-eslint": "^5.0.4",
+    "babel-plugin-transform-class-properties": "^6.11.5",
+    "babel-plugin-transform-object-assign": "^6.8.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
+    "babel-preset-stage-2": "^6.13.0",
+    "eslint": "^2.13.1",
+    "eslint-plugin-react": "^4.3.0",
+    "material-ui": "^0.15.4",
+    "react": "^15.2.1",
+    "react-addons-css-transition-group": "^15.3.0",
+    "react-datepicker": "^0.29.0",
+    "react-day-picker": "^2.4.1",
+    "react-dom": "^15.2.1",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.6.1",
+    "react-tap-event-plugin": "^1.0.0",
+    "react-thunk": "^1.0.0",
+    "redux": "^3.5.2",
+    "redux-thunk": "^2.1.0",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
