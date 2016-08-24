@@ -7,12 +7,83 @@ import List from 'material-ui/List/List';
 import ListItem from 'material-ui/List/ListItem';
 import API from '../API/api.js';
 
+class FriendsPhoto extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isLoaded : false,
+			photoPath : ""
+		}
+	}
+
+	handleClick(index) {
+		this.props.handleFriendClick(index);
+
+	}
+	componentWillMount() {
+		API.fetchFriendsPhoto(this.props.friendId).
+			then((resp) => {	
+				//console.log("cnae");
+				this.setState({
+					photoPath : resp,
+					isLoaded : true 
+				});
+			});
+	}
+
+	componentWillUnmount() {
+		this.setState({
+			isLoaded : false
+		});
+	}
+
+	componentWillReceiveProps(nextProps) {
+			this.setState({
+				isLoaded : false
+			});	
+			API.fetchFriendsPhoto(nextProps.friendId).
+			then((resp) => {	
+				this.setState({
+					photoPath : resp,
+					isLoaded : true 
+				});
+			});
+	}
+
+	render() {
+		var component = this;
+		if(!this.state.isLoaded){
+			return(
+				<ListItem onClick={this.handleClick.bind(component , this.props.friendIndex)} key={this.props.friendIndex}
+					leftAvatar={
+					        <Avatar src="../Images/user.png" />
+					      }>
+						{this.props.friendName}
+				</ListItem>
+			);
+		}
+		else {
+			return(
+				<ListItem onClick={this.handleClick.bind(component , this.props.friendIndex)} key={this.props.friendIndex}
+					leftAvatar={
+					        <Avatar src={this.state.photoPath} />
+					      }>
+						{this.props.friendName}
+				</ListItem>
+			);
+		}
+		
+	}
+}
+
+
 class Friends extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			friendL : [],
-			imagePath : []
+			imagePath : [],
+			isChanged : false
 		}
 	}
 
@@ -22,23 +93,8 @@ class Friends extends React.Component {
 		});
 	}
 
-	componentDidMount() {
-		
-	}
-
 	shouldComponentUpdate(){
 		return (this.state.friendL.length != this.props.friends.length);
-	}
-
-	componentDidUpdate() {
-		this.state.friendL.map((elem , index) => {
-			API.fetchFriendsPhoto(elem.id).
-				then((resp) => {
-						this.setState({
-							imagePath : this.state.imagePath.concat(resp)
-						});
-				});
-		})
 	}
 
 	componentWillReceiveProps() {
@@ -54,12 +110,7 @@ class Friends extends React.Component {
 		var component = this;
 		var friendList = this.state.friendL.map((elem , index) => {
 			return(
-				<ListItem onClick={this.handleClick.bind(component , index)} key={index}
-				leftAvatar={
-				        <Avatar src="../Images/user.png" />
-				      }>
-					{elem.name}
-				</ListItem>
+					<FriendsPhoto friendId={elem.id} friendIndex={index} friendName={elem.name} handleFriendClick={this.handleClick.bind(this)}/>
 				);
 		});
 	
@@ -85,6 +136,7 @@ class App extends React.Component {
 		this.props.dispatch(handle_initial_load(this.state.userId));
 	}
 	componentDidMount(){
+		console.log("11");
 		this.setState({
 			friendLis : this.props.appData.friends
 		});
